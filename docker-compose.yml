@@ -8,12 +8,37 @@ services:
       - webproxy
     depends_on: 
       - worker
+      - worker1
+    ports: 
+      - "3000:3000"
+    environment:
+        TASKS: '8'
+        WORKER: 'http://worker:8080/'
+        WORKER1: 'http://worker:8081/'
   worker:
     build:
       context: ./worker
     image: worker
     networks:
       - webproxy
+    ports: 
+      - "8080:8080"
+    environment: 
+      - MULT=true
+      - ADD=true
+      - PORT=8080
+  worker1:
+    build:
+      context: ./worker
+    image: worker
+    networks:
+      - webproxy
+    ports: 
+      - "8081:8081"
+    environment: 
+      - MULT=true
+      - ADD=true
+      - PORT=8081
 networks:
-  webproxy:
+  webproxy: 
     driver: bridge
