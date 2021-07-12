@@ -10,6 +10,9 @@ const generateTasks = i =>
   new Array(i).fill(1).map(_ => ({ type: taskType(), args: args() }))
   
 let workers = ['http://worker:8080','http://worker1:8081']
+let workersAdd = ['http://worker:8081']
+let workersMult = ['http://worker:8080']
+
 let tasks = generateTasks(nbTasks)
 let taskToDo = nbTasks
 
@@ -47,7 +50,13 @@ const main = async () => {
   while (taskToDo > 0) {
     await wait(100)
     if (workers.length === 0 || tasks.length === 0) continue
-    sendTask(workers[0], tasks[0])
+    if (tasks[0].type == "mult"){
+      sendTask(workersMult[0], tasks[0])
+    }
+    else if (tasks[0].type == "add") {
+      sendTask(workersAdd[0], tasks[0])
+    }
+
     
   }
 }
